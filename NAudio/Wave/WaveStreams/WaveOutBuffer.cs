@@ -20,6 +20,11 @@ namespace NAudio.Wave
         private GCHandle hThis; // for the user callback
 
         /// <summary>
+        /// Indicate that bytes were hardware writted in the output
+        /// </summary>
+        public event EventHandler<WrittedBytesArgs> BytesWritted;
+
+        /// <summary>
         /// creates a new wavebuffer
         /// </summary>
         /// <param name="hWaveOut">WaveOut device to write to</param>
@@ -115,7 +120,7 @@ namespace NAudio.Wave
                     buffer[n] = 0;
                 }
             }
-            WriteToWaveOut();
+            WriteToWaveOut(buffer, bytes);
             return true;
         }
 
@@ -141,14 +146,18 @@ namespace NAudio.Wave
             }
         }
 
-        private void WriteToWaveOut()
+        private void WriteToWaveOut(byte[] bufferWritted, int bytesWritted)
         {
             MmResult result;
 
             lock (waveOutLock)
             {
                 result = WaveInterop.waveOutWrite(hWaveOut, header, Marshal.SizeOf(header));
+
+                if (BytesWritted != null)
+                    BytesWritted(this, new WrittedBytesArgs(bufferWritted, bytesWritted));
             }
+
             if (result != MmResult.NoError)
             {
                 throw new MmException(result, "waveOutWrite");

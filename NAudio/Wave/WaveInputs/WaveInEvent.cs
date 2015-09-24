@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Runtime.InteropServices;
 using NAudio.Mixer;
@@ -151,6 +152,9 @@ namespace NAudio.Wave
             {
                 if (callbackEvent.WaitOne())
                 {
+                    Stopwatch stopwatch = new Stopwatch();
+                    stopwatch.Start();
+                    
                     // requeue any buffers returned to us
                     if (recording)
                     {
@@ -160,7 +164,7 @@ namespace NAudio.Wave
                             {
                                 if (DataAvailable != null)
                                 {
-                                    DataAvailable(this, new WaveInEventArgs(buffer.Data, buffer.BytesRecorded));
+                                    DataAvailable(this, new WaveInEventArgs(buffer.Data, buffer.BytesRecorded, stopwatch));
                                 }
                                 buffer.Reuse();
                             }

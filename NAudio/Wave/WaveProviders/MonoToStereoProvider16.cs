@@ -77,6 +77,5 @@ namespace NAudio.Wave
             }
             return samplesRead * 4;
         }
-
     }
 }

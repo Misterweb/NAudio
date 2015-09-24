@@ -444,6 +444,7 @@
     <Compile Include="Wave\SampleProviders\VolumeSampleProvider.cs" />
     <Compile Include="Wave\SampleProviders\SampleProviderConverterBase.cs" />
     <Compile Include="Wave\SampleProviders\SampleToWaveProvider.cs" />
+    <Compile Include="Wave\WaveOutputs\WrittedBytesArgs.cs" />
     <Compile Include="Wave\WaveProviders\BufferedWaveProvider.cs" />
     <Compile Include="Wave\SampleProviders\MonoToStereoSampleProvider.cs" />
     <Compile Include="Wave\WaveProviders\MediaFoundationResampler.cs" />

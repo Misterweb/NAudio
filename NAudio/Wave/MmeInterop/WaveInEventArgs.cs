@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace NAudio.Wave
@@ -11,14 +12,16 @@ namespace NAudio.Wave
     {
         private byte[] buffer;
         private int bytes;
+        private Stopwatch watchSinceCapture;
 
         /// <summary>
         /// Creates new WaveInEventArgs
         /// </summary>
-        public WaveInEventArgs(byte[] buffer, int bytes)
+        public WaveInEventArgs(byte[] buffer, int bytes, Stopwatch watchSinceCapture = null)
         {
             this.buffer = buffer;
             this.bytes = bytes;
+            this.watchSinceCapture = watchSinceCapture;
         }
 
         /// <summary>
@@ -36,6 +39,14 @@ namespace NAudio.Wave
         public int BytesRecorded
         {
             get { return bytes; }
+        }
+
+        /// <summary>
+        /// Watch started when the time was really captured from hardware.
+        /// </summary>
+        public Stopwatch WatchSinceCapture
+        {
+            get { return watchSinceCapture; }
         }
     }
 }

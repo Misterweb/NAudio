@@ -28,6 +28,11 @@ namespace NAudio.Wave
         public event EventHandler<StoppedEventArgs> PlaybackStopped;
 
         /// <summary>
+        /// Indicate that bytes were hardware writted in the output
+        /// </summary>
+        public event EventHandler<WrittedBytesArgs> BytesWritted; 
+
+        /// <summary>
         /// Retrieves the capabilities of a waveOut device
         /// </summary>
         /// <param name="devNumber">Device to test</param>
@@ -129,6 +134,13 @@ namespace NAudio.Wave
             for (int n = 0; n < NumberOfBuffers; n++)
             {
                 buffers[n] = new WaveOutBuffer(hWaveOut, bufferSize, waveStream, waveOutLock);
+                buffers[n].BytesWritted += OnBytesWritted;
+            }
+        }
+
+        private void OnBytesWritted(object sender, WrittedBytesArgs writtedBytesArgs) {
+            if (BytesWritted != null) {
+                BytesWritted(this, writtedBytesArgs);
             }
         }
 
@@ -341,8 +353,8 @@ namespace NAudio.Wave
                 {
                     for (int n = 0; n < buffers.Length; n++)
                     {
-                        if (buffers[n] != null)
-                        {
+                        if (buffers[n] != null) {
+                            buffers[n].BytesWritted -= OnBytesWritted;
                             buffers[n].Dispose();
                         }
                     }
