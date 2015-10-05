@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-
 namespace NAudio.Dsp
 {
     // C# ADSR based on work by Nigel Redmon, EarLevel Engineering: earlevel.com

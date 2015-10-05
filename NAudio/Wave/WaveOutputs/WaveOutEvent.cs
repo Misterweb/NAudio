@@ -26,6 +26,11 @@ namespace NAudio.Wave
         public event EventHandler<StoppedEventArgs> PlaybackStopped;
 
         /// <summary>
+        /// Indicate that bytes were hardware writted in the output
+        /// </summary>
+        public event EventHandler<WrittedBytesArgs> BytesWritted; 
+
+        /// <summary>
         /// Gets or sets the desired latency in milliseconds
         /// Should be set before a call to Init
         /// </summary>
@@ -101,6 +106,15 @@ namespace NAudio.Wave
             for (var n = 0; n < NumberOfBuffers; n++)
             {
                 buffers[n] = new WaveOutBuffer(hWaveOut, bufferSize, waveStream, waveOutLock);
+                buffers[n].BytesWritted += OnBytesWritted;
+            }
+        }
+
+        private void OnBytesWritted(object sender, WrittedBytesArgs writtedBytesArgs)
+        {
+            if (BytesWritted != null)
+            {
+                BytesWritted(this, writtedBytesArgs);
             }
         }
 
@@ -344,6 +358,7 @@ namespace NAudio.Wave
             {
                 foreach (var buffer in buffers)
                 {
+                    buffer.BytesWritted -= OnBytesWritted;
                     buffer.Dispose();
                 }
                 buffers = null;

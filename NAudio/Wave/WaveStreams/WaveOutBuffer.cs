@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -102,8 +103,7 @@ namespace NAudio.Wave
         #endregion
 
         /// this is called by the WAVE callback and should be used to refill the buffer
-        internal bool OnDone()
-        {
+        internal bool OnDone() {
             int bytes;
             lock (waveStream)
             {
@@ -152,10 +152,12 @@ namespace NAudio.Wave
 
             lock (waveOutLock)
             {
+                Stopwatch watch = new Stopwatch();
+                watch.Start();
                 result = WaveInterop.waveOutWrite(hWaveOut, header, Marshal.SizeOf(header));
 
                 if (BytesWritted != null)
-                    BytesWritted(this, new WrittedBytesArgs(bufferWritted, bytesWritted));
+                    BytesWritted(this, new WrittedBytesArgs(bufferWritted, bytesWritted, watch));
             }
 
             if (result != MmResult.NoError)
